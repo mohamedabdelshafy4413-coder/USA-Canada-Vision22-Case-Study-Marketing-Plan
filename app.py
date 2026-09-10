@@ -4,71 +4,79 @@ import pandas as pd
 st.set_page_config(page_title='Vision22 North America Growth OS', page_icon='🌎', layout='wide')
 
 st.title('🌎 Vision22 North America B2B Growth OS')
-st.caption('USA & Canada Market Intelligence | Sales Engine | Revenue Planning Platform')
+st.caption('USA & Canada Market Strategy | Buyer Intelligence | Sales Pipeline | Revenue Command Center')
 
-menu = st.sidebar.selectbox('Modules',[
-    'Executive Dashboard',
-    'ICP & Industry Selector',
-    'Lead Scoring Engine',
-    'Package Recommendation',
-    'Revenue Simulator',
-    'CRM Pipeline',
-    'Market Intelligence'
-])
+with st.sidebar:
+    module = st.selectbox('Command Center',[
+        'Executive Dashboard','Market Strategy','ICP Builder','Buyer Scoring','Package Engine','Revenue Forecast','Sales Pipeline','Marketing Plan'
+    ])
 
-industries={
-'Manufacturing':'High Value | $8K-$30K/mo','Construction & Engineering':'High Value | $7K-$25K/mo','B2B SaaS':'Premium | $10K-$40K/mo','Distribution':'Growth | $8K-$25K/mo','Professional Services':'Authority | $5K-$15K/mo'}
+industries = pd.DataFrame([
+['Manufacturing','★★★★★','$8K-$30K/mo','Lead Generation + SEO + Expansion'],
+['Construction & Engineering','★★★★★','$7K-$25K/mo','Pipeline + Ads + Conversion'],
+['B2B SaaS','★★★★★','$10K-$40K/mo','Demand Generation + LinkedIn'],
+['Distribution','★★★★','$8K-$25K/mo','Buyer Acquisition'],
+['Professional Services','★★★★','$5K-$15K/mo','Authority + Content']
+],columns=['Industry','Opportunity','Retainer','Growth System'])
 
-if menu=='Executive Dashboard':
+if module=='Executive Dashboard':
     st.header('Executive Growth Dashboard')
-    a,b,c,d=st.columns(4)
-    a.metric('Target Markets','USA + Canada')
-    b.metric('Priority Industries','5')
-    c.metric('Target Retainer','$10K-$50K')
-    d.metric('90 Day Target','5-10 Clients')
-    st.info('Vision22 operates as an outsourced B2B marketing department for companies needing predictable growth.')
+    c1,c2,c3,c4=st.columns(4)
+    c1.metric('Markets','USA + Canada')
+    c2.metric('Priority Industries','5')
+    c3.metric('Target Retainer','$10K-$50K')
+    c4.metric('90 Day Goal','5-10 Clients')
+    st.dataframe(industries,use_container_width=True)
 
-elif menu=='ICP & Industry Selector':
-    st.header('Ideal Customer Profile')
-    industry=st.selectbox('Industry',list(industries.keys()))
-    st.success(industry+' → '+industries[industry])
-    st.write('Buyer Focus: CEO, Founder, VP Sales, Marketing Director, Business Development Manager')
+elif module=='Market Strategy':
+    st.header('USA & Canada Market Strategy')
+    st.subheader('USA Priority States')
+    st.write('Texas | California | Illinois | North Carolina | Florida')
+    st.subheader('Canada Priority Provinces')
+    st.write('Ontario | Alberta | British Columbia')
 
-elif menu=='Lead Scoring Engine':
-    st.header('Prospect Opportunity Scoring')
+elif module=='ICP Builder':
+    st.header('Ideal Customer Profile Builder')
+    industry=st.selectbox('Select Industry',industries['Industry'])
+    st.success(f'{industry} selected')
+    st.write('Decision Makers: CEO | Founder | VP Sales | Marketing Director | Business Development')
+
+elif module=='Buyer Scoring':
+    st.header('Buyer Opportunity Score')
     employees=st.slider('Employees',1,5000,200)
-    website=st.checkbox('Professional Website')
-    marketing=st.checkbox('Internal Marketing Team')
-    score=40
-    if employees>100: score+=25
-    if not website: score+=20
-    if not marketing: score+=15
-    st.metric('Opportunity Score',str(score)+'/100')
-    st.write('A+ Priority' if score>=80 else 'Qualified Prospect')
+    website=st.checkbox('Strong Website')
+    marketing=st.checkbox('Marketing Team')
+    score=50+(20 if employees>100 else 0)+(15 if not website else 0)+(15 if not marketing else 0)
+    st.metric('Opportunity Score',f'{score}/100')
+    st.write('A+ Priority Prospect' if score>=80 else 'Qualified Prospect')
 
-elif menu=='Package Recommendation':
-    st.header('Recommended Growth Solution')
-    problem=st.selectbox('Main Challenge',['No Leads','Weak Website Conversion','Low Visibility','Need Market Expansion'])
-    mapping={'No Leads':'B2B Lead Generation Engine','Weak Website Conversion':'Website & Conversion System','Low Visibility':'Digital Authority System','Need Market Expansion':'International B2B Expansion System'}
-    st.success(mapping[problem])
+elif module=='Package Engine':
+    st.header('Growth Package Recommendation')
+    problem=st.selectbox('Business Challenge',['Need Leads','Weak Digital Presence','Need Authority','International Expansion'])
+    packages={'Need Leads':'B2B Lead Generation Engine ($7K-$20K/mo)','Weak Digital Presence':'Website & Conversion System ($10K-$50K)','Need Authority':'Digital Authority System ($5K-$20K/mo)','International Expansion':'International B2B Expansion ($10K-$35K)'}
+    st.success(packages[problem])
 
-elif menu=='Revenue Simulator':
-    st.header('90 Day Revenue Forecast')
-    leads=st.number_input('Target Accounts',100,100000,5000)
-    reply=st.slider('Positive Reply %',1,20,5)
-    close=st.slider('Closing %',1,50,15)
-    value=st.number_input('Average Monthly Retainer',5000,100000,15000)
-    clients=leads*reply/100*close/100
-    st.metric('Expected Clients',round(clients))
-    st.metric('Expected MRR',f'${clients*value:,.0f}')
+elif module=='Revenue Forecast':
+    st.header('Revenue Forecast Model')
+    accounts=st.number_input('Target Accounts',100,100000,10000)
+    reply=st.slider('Reply Rate %',1,20,5)
+    close=st.slider('Close Rate %',1,50,15)
+    retainer=st.number_input('Average Retainer',5000,50000,12000)
+    clients=accounts*reply/100*close/100
+    a,b=st.columns(2)
+    a.metric('Expected Clients',round(clients))
+    b.metric('Monthly Revenue',f'${clients*retainer:,.0f}')
 
-elif menu=='CRM Pipeline':
-    st.header('Sales Pipeline')
-    data=pd.DataFrame({'Stage':['Prospects','Contacted','Replies','Meetings','Proposals','Won'],'Count':[5000,800,100,30,10,5]})
-    st.dataframe(data,use_container_width=True)
+elif module=='Sales Pipeline':
+    st.header('Sales Pipeline Command Center')
+    pipeline=pd.DataFrame({'Stage':['Prospects','Contacted','Replies','Meetings','Proposals','Won'],'Count':[10000,1500,200,50,15,5]})
+    st.bar_chart(pipeline.set_index('Stage'))
+    st.dataframe(pipeline,use_container_width=True)
 
-elif menu=='Market Intelligence':
-    st.header('USA & Canada Market Intelligence')
-    st.write('Future integrations: market feeds, SEO changes, advertising trends, competitor monitoring and industry opportunities.')
+elif module=='Marketing Plan':
+    st.header('90 Day Marketing Execution Plan')
+    st.write('Month 1: ICP + Database + Campaign Setup')
+    st.write('Month 2: Outreach + Meetings + Optimization')
+    st.write('Month 3: Closing + Retainers + Scaling')
 
-st.success('Vision22 Growth OS V5 Active')
+st.success('Vision22 North America Growth OS V6 Active')
